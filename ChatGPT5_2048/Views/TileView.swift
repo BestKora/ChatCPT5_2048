@@ -36,7 +36,7 @@ struct TileView: View {
                     .foregroundColor(tile.value > 4 ? .white : .black)
             )
             // 🔄 Анимация "прыжка" при объединении плиток
-            .scaleEffect(isPopping ? 1.2 : 1.0)
+           .scaleEffect(isPopping ? 1.2 : 1.0)
             .onChange(of: tile.merged) { _, merged in
                 if merged {
                     // Запускаем анимацию увеличения плитки
@@ -131,6 +131,6 @@ extension Color {
 
 #Preview {
     // 🔍 Превью плитки со значением 8 в позиции (0,2)
-    TileView(tile: Tile(value: 8, position: Position(row: 0, col: 2)), size: 70, spacing: 8) {  }
+    TileView(tile: Tile(value: 8, position: Position(row: 0, col: 2)), size: 70, spacing: 8)  {  }
 }
 

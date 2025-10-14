@@ -5,43 +5,6 @@
 //  Created by Tatiana Kornilova on 21.09.2025.
 //
 import SwiftUI
-import Playgrounds
-
-#Playground("move") {
-    var moved = false
-    let row = [/*Tile(value: 2, position: Position(row: 0, col: 0)), */Tile(value: 2, position: Position(row: 0, col: 1)), Tile(value: 4, position: Position(row: 0, col: 2)), Tile(value: 4, position: Position(row: 0, col: 3))]
-    // Функция сжатия линии (строки или колонки) и слияния плиток
-    func collapse(_ line: [Tile]) -> [Tile] {
-        var newLine: [Tile] = []
-        var skip = false
-        for (i, tile) in line.enumerated() {
-            if skip {
-                skip = false
-                continue
-            }
-            // Если две подряд плитки равны — объединяем их
-            if i < line.count - 1 && tile.value == line[i+1].value {
-                var mergedTile =  line [i + 1]
-                mergedTile.value *= 2
-                mergedTile.merged = true
-                newLine.append(mergedTile)
-                skip = true // пропускаем следующую
-            } else {
-                newLine.append(tile)
-            }
-        }
-        return newLine
-    }
-    
-    let collapsed = collapse (row)
-    for (c, tile) in collapsed.enumerated() {
-        if tile.position.col != c  /*|| tile.value != row[c].value */ { moved = true }
-        print ("---- tileCol = \(tile.position.col)  col = \(c)")
-    }
-    print ("moved = \(moved)")
-    print ("row = \(row)")
-    print ("collapsed = \(collapsed)")
-}
 
 // Возможные направления движения
 enum Direction : CaseIterable {
@@ -123,103 +86,6 @@ class GameViewModel {
         tiles.append(newTile)
     }
     
-    // Первоначальный вариант функции move (direction: Direction)
-    /// Выполнение хода в выбранном направлении + добавление случайной новой плитки
- /*   func move(direction: Direction) {
-        var moved = false   // флаг, изменилось ли поле после хода
-        
-        // Функция сжатия линии (строки или колонки) и слияния плиток
-        func collapse(_ line: [Tile]) -> [Tile] {
-            var newLine: [Tile] = []
-            var skip = false
-            for (i, tile) in line.enumerated() {
-                if skip {
-                    skip = false
-                    continue
-                }
-                // Если две подряд плитки равны — объединяем их
-                if i < line.count - 1 && tile.value == line[i+1].value {
-                    var mergedTile =  line [i + 1]
-                    mergedTile.value *= 2
-                    mergedTile.merged = true
-                    score += mergedTile.value
-                    newLine.append(mergedTile)
-                    skip = true // пропускаем следующую
-                } else {
-                    newLine.append(tile)
-                }
-            }
-            return newLine
-        }
-        
-        var newTiles: [Tile] = []
-        
-        switch direction {
-        case .left:
-            // Двигаем все строки влево
-            for r in 0..<size {
-                let row = tiles.filter { $0.position.row == r }.sorted { $0.position.col < $1.position.col }
-                let collapsed = collapse(row)
-                for (c, tile) in collapsed.enumerated() {
-                    if tile.position.col != c  || tile.value != row[c].value { moved = true }
-                    var updated = tile
-                    updated.position.row = r
-                    updated.position.col = c
-                    newTiles.append(updated)
-                }
-            }
-        case .right:
-            // Двигаем все строки вправо
-            for r in 0..<size {
-                let row = tiles.filter { $0.position.row == r }.sorted { $0.position.col > $1.position.col }
-                let collapsed = collapse(row)
-                for (i, tile) in collapsed.enumerated() {
-                    let c = size - 1 - i
-                    if tile.position.col != c   || tile.value != row[i].value { moved = true }
-                    var updated = tile
-                    updated.position.row = r
-                    updated.position.col = c
-                    newTiles.append(updated)
-                }
-            }
-            
-        case .up:
-            // Двигаем все колонки вверх
-            for c in 0..<size {
-                let col = tiles.filter { $0.position.col == c }.sorted { $0.position.row < $1.position.row }
-                let collapsed = collapse(col)
-                for (r, tile) in collapsed.enumerated() {
-                    if tile.position.row != r || tile.value != col[min(r, col.count-1)].value  { moved = true }
-                    var updated = tile
-                    updated.position.row = r
-                    updated.position.col = c
-                    newTiles.append(updated)
-                }
-            }
-        case .down:
-            // Двигаем все колонки вниз
-            for c in 0..<size {
-                let col = tiles.filter { $0.position.col == c }.sorted { $0.position.row > $1.position.row }
-                let collapsed = collapse(col)
-                for (i, tile) in collapsed.enumerated() {
-                    let r = size - 1 - i
-                    if tile.position.row != r || tile.value != col[min(i, col.count-1)].value { moved = true }
-                    var updated = tile
-                    updated.position.row = r
-                    updated.position.col = c
-                    newTiles.append(updated)
-                }
-            }
-        }
-        
-        // Если было движение — обновляем поле
-        if moved {
-            tiles = newTiles
-            addRandomTile()
-            checkGameOver()
-        }
-    } */
-    
     /// Проверка, закончена ли игра
     private func checkGameOver() {
         // Есть ли пустая клетка?
@@ -275,7 +141,7 @@ class GameViewModel {
                     mergedTile.value *= 2          // увеличиваем значение в 2 раза
                     mergedTile.merged = true       // помечаем как объединённую
                     score += mergedTile.value      // добавляем очки за слияние
-                    newLine.append(mergedTile)     // добавляем новую плитку в линию
+                    newLine.append(mergedTile)    // добавляем новую плитку в линию
                     skip = true                    // пропускаем следующую плитку
                     merged = true                  // отмечаем, что произошло слияние
                 } else {
@@ -362,7 +228,6 @@ class GameViewModel {
         if moved {
             tiles = newTiles
         }
-
         return moved
     }
 
@@ -374,113 +239,6 @@ class GameViewModel {
             checkGameOver()   // проверяем, есть ли возможные ходы
         }
     }
-
-/*
-  // Variant 2
-    func slide(direction: Direction) -> Bool {
-        var moved = false   // была ли перемещена или объединена какая-либо плитка
-        var newTiles: [Tile] = []
-
-        // MARK: - Collapse one line (row or column)
-        func collapse(_ line: [Tile]) -> ([Tile], Bool) {
-            var newLine: [Tile] = []
-            var skip = false
-            var merged = false
-            
-            for (i, tile) in line.enumerated() {
-                if skip {
-                    skip = false
-                    continue
-                }
-                // merge adjacent equal tiles
-                if i < line.count - 1 && tile.value == line[i + 1].value {
-                    var mergedTile = line[i + 1]
-                    mergedTile.value *= 2
-                    mergedTile.merged = true
-                    score += mergedTile.value
-                    newLine.append(mergedTile)
-                    skip = true
-                    merged = true
-                } else {
-                    newLine.append(tile)
-                }
-            }
-            return (newLine, merged)
-        }
-
-        // MARK: - Move by direction
-        switch direction {
-        case .left:
-            for r in 0..<size {
-                let row = tiles.filter { $0.position.row == r }
-                               .sorted { $0.position.col < $1.position.col }
-                let (collapsed, merged) = collapse(row)
-                if merged { moved = true }
-                for (c, tile) in collapsed.enumerated() {
-                    if tile.position.col != c { moved = true }
-                    var updated = tile
-                    updated.position = Position(row: r, col: c)
-                    newTiles.append(updated)
-                }
-            }
-
-        case .right:
-            for r in 0..<size {
-                let row = tiles.filter { $0.position.row == r }
-                               .sorted { $0.position.col > $1.position.col }
-                let (collapsed, merged) = collapse(row)
-                if merged { moved = true }
-                for (i, tile) in collapsed.enumerated() {
-                    let c = size - 1 - i
-                    if tile.position.col != c { moved = true }
-                    var updated = tile
-                    updated.position = Position(row: r, col: c)
-                    newTiles.append(updated)
-                }
-            }
-
-        case .up:
-            for c in 0..<size {
-                let col = tiles.filter { $0.position.col == c }
-                               .sorted { $0.position.row < $1.position.row }
-                let (collapsed, merged) = collapse(col)
-                if merged { moved = true }
-                for (r, tile) in collapsed.enumerated() {
-                    if tile.position.row != r { moved = true }
-                    var updated = tile
-                    updated.position = Position(row: r, col: c)
-                    newTiles.append(updated)
-                }
-            }
-
-        case .down:
-            for c in 0..<size {
-                let col = tiles.filter { $0.position.col == c }
-                               .sorted { $0.position.row > $1.position.row }
-                let (collapsed, merged) = collapse(col)
-                if merged { moved = true }
-                for (i, tile) in collapsed.enumerated() {
-                    let r = size - 1 - i
-                    if tile.position.row != r { moved = true }
-                    var updated = tile
-                    updated.position = Position(row: r, col: c)
-                    newTiles.append(updated)
-                }
-            }
-        }
-        if moved {
-            tiles = newTiles
-        }
-        return moved
-    }
-   
-    func move(direction: Direction) {
-            let changed = slide( direction: direction)
-            if changed {
-                addRandomTile()
-                checkGameOver()
-            }
-        }*/
 }
 
 extension GameViewModel {
@@ -676,7 +434,7 @@ extension GameViewModel {
       func expectimax(node: GameViewModel, depth: Int, isChanceNode: Bool) -> Double {
           // терминальные условия
           
-          checkGameOver()
+          node.checkGameOver()
           if depth <= 0 || node.gameOver {
               return evaluateBoard(node)
           }
@@ -732,11 +490,11 @@ extension GameViewModel {
         let empties = state.emptyPositions().count
        
        // weights (tunable)
-         let wEmpty = 11.7
-         let wMonotonicity =  1.0
+        let wEmpty = 12.7 // 11.7
+         let wMonotonicity =  1.0// 1.0
          let wSmoothness = 0.0 //-0.1
-         let wMaxWeight = 1.0
-         let wScore = 0.0
+         let wMaxWeight = 1.1 // 1.0
+        let wScore = empties <= 4 ? 1.2 : 0.0
     
         let mono = monotonicity(grid)
         let smooth = smoothness(state)

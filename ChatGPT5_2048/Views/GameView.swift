@@ -12,7 +12,7 @@ struct GameView: View {
     @State private var aiEnabled = false
     @State private var cachedHint: Direction?
     @State private var aiMode: AIMode = .expectimax   // 👈 режим ИИ
-    @State private var timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+    @State private var timer = Timer.publish(every: 0.65, on: .main, in: .common).autoconnect()
 
     let gridSize: CGFloat = 80  // tile size
     let spacing: CGFloat = 8
@@ -44,7 +44,7 @@ struct GameView: View {
                             if let index = viewModel.tiles.firstIndex(where: { $0.id == tile.id }) {
                                 viewModel.tiles[index].merged = false
                             }
-                        }
+                        } 
                     }
                     
                     // ✅ AI Arrow in the center
@@ -155,7 +155,7 @@ struct GameView: View {
                 // Uncomment for auto-play
                 if aiEnabled && !viewModel.gameOver {
                         switch aiMode {
-                        case .expectimax: withAnimation  { viewModel.playAIExpectimaxAsync() }
+                        case .expectimax: withAnimation  {viewModel.playAIExpectimaxAsync()}
                         case .monteCarlo: withAnimation  { viewModel.playAITurn2() }
                             //  viewModel.playAITurn()
                             //   viewModel.playAITurn2()
@@ -169,9 +169,11 @@ struct GameView: View {
 
 // MARK: - Режимы ИИ
 enum AIMode {
-    case expectimax
     case monteCarlo
+    case expectimax
 }
+   
+    
 
 #Preview {
     GameView()
