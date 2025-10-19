@@ -11,7 +11,7 @@ struct GameView: View {
     @State private var showHintDirection = false
     @State private var aiEnabled = false
     @State private var cachedHint: Direction?
-    @State private var aiMode: AIMode = .expectimax   // 👈 режим ИИ
+    @State private var aiMode: AIMode = .expectimax  // 👈 режим ИИ
     @State private var timer = Timer.publish(every: 0.65, on: .main, in: .common).autoconnect()
 
     let gridSize: CGFloat = 80  // tile size
@@ -38,17 +38,15 @@ struct GameView: View {
                     }
                     
                     // Animated tiles
-                    ForEach(viewModel.tiles) { tile in
+                  ForEach(viewModel.tiles) { tile in
                         TileView(tile: tile, size: gridSize, spacing: spacing) {
                             // Переустановка флага merged только после анимацииo
-                            if let index = viewModel.tiles.firstIndex(where: { $0.id == tile.id }) {
-                                viewModel.tiles[index].merged = false
-                            }
-                        } 
+                            viewModel.mergedTileFalse (tile: tile)
+                        }
                     }
                     
                     // ✅ AI Arrow in the center
-                    if showHintDirection, let dir = cachedHint, !aiEnabled {
+                   if showHintDirection, let dir = cachedHint, !aiEnabled {
                         ArrowMorphView(direction: dir)
                                 .frame(width: 125, height: 125)
                     }
@@ -82,6 +80,7 @@ struct GameView: View {
                             }
                         }
                 )
+            
                 HStack {
                     VStack (alignment: .leading) {
                         Button("Restart") {
@@ -97,6 +96,15 @@ struct GameView: View {
                             Text("Monte Carlo").tag(AIMode.monteCarlo).font(.headline)
                         }
                         .pickerStyle(.menu)
+                        .onChange(of: aiMode) { _,newValue in
+                                    // Recreate the timer with the new interval
+                            switch newValue
+                            {
+                            case .expectimax: timer = Timer.publish(every: 0.65, on: .main, in: .common).autoconnect()
+                            
+                            case .monteCarlo: timer = Timer.publish(every: 0.4, on: .main, in: .common).autoconnect()
+                            }
+                          }
                     }
                    
                     Spacer()
@@ -105,7 +113,7 @@ struct GameView: View {
                         CheckBoxView(isChecked: $showHintDirection, title: "Hint Direction")
                         CheckBoxView(isChecked: $aiEnabled, title: "AI")
                             .onChange(of: aiEnabled) { _ , newValue in
-                                if newValue { showHintDirection = false}
+                                if newValue {showHintDirection = false}
                             }
                     }
                 }
@@ -119,7 +127,7 @@ struct GameView: View {
             .onChange(of: showHintDirection) { oldValue,newValue in
                 if newValue {
                     Task{
-                        if let hint =  viewModel.bestDirectionExpectimax() {
+                        if let hint =  viewModel.optimalDirection {
                             await MainActor.run { cachedHint = hint }
                         }
                     }
@@ -136,7 +144,7 @@ struct GameView: View {
                 if showHintDirection {
                     if (oldValues  != newValues || oldPositions != newPositions) {
                             Task{
-                                if let hint =  viewModel.bestDirectionExpectimax() {
+                                if let hint =  viewModel.optimalDirection  {
                                     await MainActor.run {
                                         withAnimation {
                                             cachedHint = hint
@@ -151,17 +159,14 @@ struct GameView: View {
                 }
             }
         //-----------
-           .onReceive(timer) { _ in
+            .onReceive(timer) { _ in
                 // Uncomment for auto-play
-                if aiEnabled && !viewModel.gameOver {
-                        switch aiMode {
-                        case .expectimax: withAnimation  {viewModel.playAIExpectimaxAsync()}
-                        case .monteCarlo: withAnimation  { viewModel.playAITurn2() }
-                            //  viewModel.playAITurn()
-                            //   viewModel.playAITurn2()
-                            //  viewModel.playAIExpectimax()
-                           // viewModel.playAIExpectimaxAsync()
-                        }
+                if aiEnabled &&  !viewModel.gameOver {
+                    switch aiMode {
+                    case .expectimax: withAnimation  { viewModel.playAIExpectimaxAsync()}
+                    case .monteCarlo: withAnimation  {
+                        viewModel.playAITurn2() }
+                    }
                 }
             }
     } // body

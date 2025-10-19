@@ -6,8 +6,8 @@
 //
 import SwiftUI
 
-// final class Expectimax: Sendable {
-    struct Expectimax {
+ final class Expectimax: Sendable {
+ //   struct Expectimax {
     /// Выбор оптимального направления с помощью Expectimax ( асинхронный )
   func bestDirectionExpectimaxAsync (game: Game) async -> Direction? {
         let depth  = 5
@@ -216,7 +216,7 @@ import SwiftUI
         let empties = state.emptyPositions().count
        
        // weights (tunable)
-        let wEmpty = 11.7 // 11.7
+        let wEmpty = 11.7// 11.7
          let wMonotonicity =  1.1// 1.0
          let wSmoothness = 0.0 //-0.1
          let wMaxWeight = 1.0 // 1.0

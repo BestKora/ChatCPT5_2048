@@ -10,12 +10,12 @@ import XCTest
 @testable import ChatGPT5_2048
 
 final class ChatGPT5_2048Tests: XCTestCase {
-    var game : GameViewModel!
+    var game : Game!
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         super.setUp()
-        game = GameViewModel()
+        game = Game()
     }
 
     override func tearDownWithError() throws {

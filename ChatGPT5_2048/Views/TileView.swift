@@ -47,6 +47,7 @@ struct TileView: View {
                         // После завершения возвращаем размер обратно
                         withAnimation {
                             isPopping = false
+                           // tile.merged = false
                             onPopFinished()
                         }
                     }
@@ -131,6 +132,7 @@ extension Color {
 
 #Preview {
     // 🔍 Превью плитки со значением 8 в позиции (0,2)
-    TileView(tile: Tile(value: 8, position: Position(row: 0, col: 2)), size: 70, spacing: 8)  {  }
+    let tile = Tile(value: 8, position: Position(row: 0, col: 2))
+    TileView(tile: tile, size: 70, spacing: 8)  {  }
 }
 
