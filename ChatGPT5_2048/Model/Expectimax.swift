@@ -19,7 +19,7 @@ import SwiftUI
         newGame.checkGameOver()
         if newGame.gameOver { return nil }
         
-        await withTaskGroup(of: (Direction, Double)?.self) { group in
+        await withTaskGroup (of: (Direction, Double)?.self) { group in
             for dir in Direction.allCases {
                 group.addTask { [self] in
                     var state = Game (tiles: game.tiles)
@@ -72,7 +72,7 @@ import SwiftUI
             
             
             // Run all spawns in parallel
-            return await withTaskGroup(of: Double.self) { group in
+            return await withTaskGroup /*(of: Double.self) */{ group in
                 for pos in empties {
                     group.addTask {
                         // вариант со значением 2
@@ -103,7 +103,7 @@ import SwiftUI
             // Узел "игрок": выбираем лучший ход (max)
             var best = -Double.infinity
             
-            return await withTaskGroup(of: Double.self) { group in
+            return await withTaskGroup /*( of: Double.self) */{ group in
                 for dir in Direction.allCases {
                     group.addTask { [self] in
                         var copy = Game (tiles: node.tiles)
@@ -217,7 +217,7 @@ import SwiftUI
        
        // weights (tunable)
         let wEmpty = 11.7// 11.7
-         let wMonotonicity =  1.1// 1.0
+         let wMonotonicity =  1.1 // 1.0
          let wSmoothness = 0.0 //-0.1
          let wMaxWeight = 1.0 // 1.0
          let wScore = 0.0
