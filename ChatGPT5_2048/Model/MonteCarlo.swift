@@ -25,7 +25,7 @@
             }
 
             // 🔁 Запускаем симуляции параллельно
-            await withTaskGroup /*(of: Int.self) */{ simGroup in
+            await withTaskGroup { simGroup in
                 for _ in 0..<simulations {
                     simGroup.addTask {
                         var simulation = Game (tiles: tiles)

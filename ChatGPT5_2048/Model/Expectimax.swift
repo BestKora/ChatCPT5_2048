@@ -72,7 +72,7 @@ import SwiftUI
             
             
             // Run all spawns in parallel
-            return await withTaskGroup /*(of: Double.self) */{ group in
+            return await withTaskGroup { group in
                 for pos in empties {
                     group.addTask {
                         // вариант со значением 2
@@ -103,7 +103,7 @@ import SwiftUI
             // Узел "игрок": выбираем лучший ход (max)
             var best = -Double.infinity
             
-            return await withTaskGroup /*( of: Double.self) */{ group in
+            return await withTaskGroup { group in
                 for dir in Direction.allCases {
                     group.addTask { [self] in
                         var copy = Game (tiles: node.tiles)
